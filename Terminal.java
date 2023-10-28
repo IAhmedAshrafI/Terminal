@@ -1,5 +1,10 @@
 import java.util.Arrays;
 import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.nio.file.StandardCopyOption;
 
 public class Terminal {
     private Parser parser;
@@ -41,6 +46,20 @@ public class Terminal {
             cdCommand(args);
         } else if (commandName.equals("ls")) {
             lsCommand(args);
+        } else if (commandName.equals("touch")){
+            // if (args.length == 1){
+            //     System.out.println("Invalid usage. Usage: touch <file_name>");
+            // } else {
+                touchCommand(parser.getArgs()[0]);
+            // }
+        } else if (commandName.equals("cp") && args[0].equals("-r")){
+            // if (args.length == 2){
+            //     System.out.println("Invalid usage. Usage: touch <file_name>");
+            // } else {
+                cpCommand(parser.getArgs()[1], parser.getArgs()[2]);
+            // }
+        } else if (commandName.equals("cp")){
+            cprCommand(new File(parser.getArgs()[0]), new File(parser.getArgs()[1]));
         } else {
             System.out.println("Command not found: " + commandName);
         }
@@ -109,6 +128,54 @@ public class Terminal {
             }
         } else {
             System.out.println("Invalid usage. Usage: ls [-r]");
+        }
+    }
+
+    public void touchCommand(String fileName) {
+        File currentDir = new File(fileName);
+        try {
+            if (!currentDir.exists()) {
+                boolean fileCreated = currentDir.createNewFile();
+                if (fileCreated) {
+                    System.out.println("Creating file: " + fileName);
+                } else {
+                    System.out.println("The file is not created.");
+                }
+            } else {
+                System.out.println("The file is already created.");
+            }
+        } catch (IOException e){
+            e.printStackTrace();
+        }
+    }
+
+    public void cpCommand(String source, String destination){
+        Path src = Paths.get(source), des = Paths.get(destination);
+        try{
+            Files.copy(src, des, StandardCopyOption.REPLACE_EXISTING);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+    
+    public void cprCommand(File source, File destination) {
+        try{
+            if (source.isDirectory()) {
+                if (!destination.exists()) {
+                    destination.mkdirs();
+                }
+    
+                String[] files = source.list();
+                for (String file : files) {
+                    File srcFile = new File(source, file);
+                    File destFile = new File(destination, file);
+                    cprCommand(srcFile, destFile);
+                }
+            } else {
+                Files.copy(source.toPath(), destination.toPath(), StandardCopyOption.REPLACE_EXISTING);
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
         }
     }
 
