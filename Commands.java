@@ -1,24 +1,28 @@
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 
 public abstract class Commands {
 
     public void cdCommand(String[] args) {
         if (args.length == 0) {
             // Case 1: 'cd' with no arguments - change to the home directory.
-            // String userHome = System.getProperty("user.home");
-            System.out.println(System.getProperty("user.dir"));
+            String userHome = System.getProperty("user.home");
+            System.out.println(System.setProperty("user.dir", userHome));
         } else if (args.length == 1) {
             if (args[0].equals("..")) {
                 // Case 2: 'cd ..' - change to the previous directory.
                 String currentDir = System.getProperty("user.dir");
                 File currentDirectory = new File(currentDir);
                 String parentDir = currentDirectory.getParent();
+                System.out.println(parentDir);
                 if (parentDir != null) {
                     System.out.println(System.setProperty("user.dir", parentDir));
                 } else {
@@ -121,36 +125,129 @@ public abstract class Commands {
         }
     }
 
+    public void rmCommand(String[] args){
 
-    //problem while mkdir of a complete path
-    public static void mkdir(String... arguments) {
-        for (String argument : arguments) {
-            Path directoryPath = Paths.get(argument);
-            if (Files.isDirectory(directoryPath)) {
-                createDirectory(directoryPath);
-            } else {
-                Path parentPath = directoryPath.getParent();
-                if (parentPath != null) {
-                    createDirectory(parentPath);
+        switch(args.length){
+            case 1 :
+             File file = new File(args[0]);
+
+             if(file.delete()){
+              System.out.println("File Deleted .");
+              }
+
+             else {System.out.println("Failed to Delete !");}
+
+             break;
+
+            default:
+             System.out.println("Invalid Usage ! Usage : rm <filename>")
+             break;
+        }
+      
+          
+    }
+
+    public void catCommand(String[] args){
+    
+      switch(args.length){
+
+        case 1 :
+
+         File file = new File(args[0]);
+
+         if(file.exists()){
+            
+             try{
+            
+               List<String> ans= Files.readAllLines(Paths.get(args[0]));
+              
+               for(String line : ans)System.out.println(line);
+            
+             }
+            
+             catch(IOException e){
+                e.printStackTrace();
+             }
+        }
+
+             else{
+               System.out.println("File Not Found !");
+            }
+
+            break;
+
+        case 2:
+
+         String[]  files = {args[0],args[1]};
+         List<String> ans=new ArrayList<String>();
+         
+         try{
+           
+            for(String obj : files){
+            ans.addAll(Files.readAllLines(Paths.get(obj)));  
                 }
-                createDirectory(directoryPath);
+         }
+        
+         catch(IOException e){
+                e.printStackTrace();
+                break;
             }
-        }
+        
+          for(String line : ans ) System.out.println(line);
+        
+          break;
+        
+        default:
+        
+          System.out.println("Invalid Usage ! Usage : cat <file_name> <file_name>(optional)");
+        
+          break;
+      }
+
+}
+
+
+
+public void wcCommand(String[] args){
+    
+ switch(args.length){
+
+    case 1 :
+
+    File file = new File(args[0]);
+    
+    if(file.exists()){
+     
+        int lineCount=0 , wordCount=0 ,characterCount=0;
+        
+        try{
+            List<String> ans= Files.readAllLines(Paths.get(args[0]));
+            lineCount = ans.size();
+
+            for(String line : ans){
+                String[] words = line.trim().split(" ");
+                wordCount += words.length;
+                for(String word : words) characterCount+=word.length();
+            }
+
+            System.out.println(lineCount + " " + wordCount+ " " +characterCount+" "+args[0]);
+
+            }
+
+            catch(IOException e){
+                e.printStackTrace();
+            }
+    }
+    else{
+        System.out.println("File Not Found !");
     }
 
-    private static void createDirectory(Path directoryPath) {
-        try {
-            if (!Files.exists(directoryPath)) {
-                Files.createDirectories(directoryPath);
-                System.out.println("Directory created: " + directoryPath.toAbsolutePath());
-            } else {
-                System.out.println("Directory already exists: " + directoryPath.toAbsolutePath());
-            }
-        } catch (IOException e) {
-            System.out.println("Failed to create directory: " + directoryPath.toAbsolutePath());
-            e.printStackTrace();
-        }
-    }
+     break;
 
+    default :
+    System.out.println("Invalid Usage ! Usage : wc <filename>");
+
+ }
+}
 
 }
