@@ -121,4 +121,37 @@ public abstract class Commands {
             e.printStackTrace();
         }
     }
+
+
+    //problem while mkdir of a complete path
+    public static void mkdir(String... arguments) {
+        for (String argument : arguments) {
+            Path directoryPath = Paths.get(argument);
+            if (Files.isDirectory(directoryPath)) {
+                createDirectory(directoryPath);
+            } else {
+                Path parentPath = directoryPath.getParent();
+                if (parentPath != null) {
+                    createDirectory(parentPath);
+                }
+                createDirectory(directoryPath);
+            }
+        }
+    }
+
+    private static void createDirectory(Path directoryPath) {
+        try {
+            if (!Files.exists(directoryPath)) {
+                Files.createDirectories(directoryPath);
+                System.out.println("Directory created: " + directoryPath.toAbsolutePath());
+            } else {
+                System.out.println("Directory already exists: " + directoryPath.toAbsolutePath());
+            }
+        } catch (IOException e) {
+            System.out.println("Failed to create directory: " + directoryPath.toAbsolutePath());
+            e.printStackTrace();
+        }
+    }
+
+
 }
