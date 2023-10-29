@@ -52,9 +52,9 @@ public class Terminal extends Commands {
         } else if (commandName.equals("touch")) {
             touchCommand(parser.getArgs()[0]);
         } else if (commandName.equals("cp") && args[0].equals("-r")) {
-            cpCommand(parser.getArgs()[1], parser.getArgs()[2]);
+            cprCommand((new File (parser.getArgs()[0])), new File(parser.getArgs()[1]));
         } else if (commandName.equals("cp")) {
-            cprCommand(new File(parser.getArgs()[0]), new File(parser.getArgs()[1]));
+            cpCommand(parser.getArgs()[1], parser.getArgs()[2]);
         } else if (commandName.equals("mkdir")) {
             mkdir(parser.getArgs()[1]);
         } else if (commandName.equals("history")) {

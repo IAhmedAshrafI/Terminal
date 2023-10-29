@@ -11,15 +11,14 @@ public abstract class Commands {
     public void cdCommand(String[] args) {
         if (args.length == 0) {
             // Case 1: 'cd' with no arguments - change to the home directory.
-            String userHome = System.getProperty("user.home");
-            System.out.println(System.setProperty("user.dir", userHome));
+            // String userHome = System.getProperty("user.home");
+            System.out.println(System.getProperty("user.dir"));
         } else if (args.length == 1) {
             if (args[0].equals("..")) {
                 // Case 2: 'cd ..' - change to the previous directory.
                 String currentDir = System.getProperty("user.dir");
                 File currentDirectory = new File(currentDir);
                 String parentDir = currentDirectory.getParent();
-                System.out.println(parentDir);
                 if (parentDir != null) {
                     System.out.println(System.setProperty("user.dir", parentDir));
                 } else {
