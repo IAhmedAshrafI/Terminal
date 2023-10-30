@@ -46,14 +46,14 @@ public class Terminal extends Commands {
             // } else {
                 touchCommand(parser.getArgs()[0]);
             // }
-        } else if (commandName.equals("cp") && args[0].equals("-r")){
-            // if (args.length == 2){
-            //     System.out.println("Invalid usage. Usage: touch <file_name>");
-            // } else {
-                cpCommand(parser.getArgs()[1], parser.getArgs()[2]);
-            // }
         } else if (commandName.equals("cp")){
-            cprCommand(new File(parser.getArgs()[0]), new File(parser.getArgs()[1]));
+            if (args.length == 2){
+                cpCommand(args[0], args[1]);
+            } else if (args.length == 3 && args[0].equals("-r")){
+                cprCommand(new File(args[1]), new File(args[2]));
+            } else {
+                System.out.println("Invalid usage. Usage: touch <file_name>");
+            }
         }
         
         else if(commandName.equals("rm")){
