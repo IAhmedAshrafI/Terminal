@@ -1,4 +1,7 @@
 import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.util.Arrays;
 public class Terminal extends Commands {
     private Parser parser;
 
@@ -16,61 +19,128 @@ public class Terminal extends Commands {
             }
 
             if (parser.parse(input)) {
-                chooseCommandAction();
-            } else {
+                int index = Arrays.asList(parser.getArgs()).indexOf(">");
+                int index2 = Arrays.asList(parser.getArgs()).indexOf(">>");
+                if(index!=-1){
+                  String [] copy = Arrays.copyOfRange(parser.getArgs(), index+1, parser.getArgs().length);
+                  String [] main = Arrays.copyOfRange(parser.getArgs(), 0, index);
+                  System.out.println(copy[0]);
+                  String commandAns = chooseCommandAction(main);
+                  operator1Command(commandAns , copy);
+                  
+                }
+                else if(index2!=-1){
+                  String [] copy = Arrays.copyOfRange(parser.getArgs(), index2+1, parser.getArgs().length);
+                  String [] main = Arrays.copyOfRange(parser.getArgs(), 0, index2);
+                  System.out.println(copy[0]);
+                  String commandAns = chooseCommandAction(main);
+                  operator2Command(commandAns , copy);
+                }
+                else{String commandAns = chooseCommandAction(parser.getArgs()); System.out.println(commandAns);}
+            }
+            
+            else {
                 System.out.println("Invalid command.");
             }
         }
     }
 
-    public void chooseCommandAction() {
+
+    public void operator1Command (String commandAns , String[] copy){
+         if(copy.length==1){
+           try{
+             FileWriter file = new FileWriter(copy[0]);
+
+             file.write(commandAns);
+
+             file.close();
+
+           }
+           catch(IOException  e){
+               e.printStackTrace();
+           }
+         }
+         else{
+            System.out.println("Invalid usage ! Usage : command > <filename>");
+         }
+    }
+
+    public void operator2Command (String commandAns , String[] copy){
+         if(copy.length==1){
+           try{
+               File file = new File(copy[0]);
+               if((file.exists())){
+                   FileWriter file2 = new FileWriter(copy[0]);
+                   file2.write(commandAns);
+                   file2.close();
+               }
+               else{
+                System.out.println("No Such File Exists!");
+               }
+             }
+
+           catch(IOException  e){
+               e.printStackTrace();
+           }
+         }
+         else{
+            System.out.println("Invalid usage ! Usage : command >> <filename>");
+         }
+    }
+
+    public String chooseCommandAction(String [] args ) {
         String commandName = parser.getCommandName();
-        String[] args = parser.getArgs();
-
-
-        if (commandName.equals("echo")) {
-            if (args.length == 1) {
-                System.out.println(args[0]);
-            } else {
-                System.out.println("Invalid usage. Usage: echo <text>");
-            }
-        } else if (commandName.equals("pwd")) {
-            System.out.println(System.getProperty("user.dir"));
-        } else if (commandName.equals("cd")) {
-            cdCommand(args);
-        } else if (commandName.equals("ls")) {
-            lsCommand(args);
-        } else if (commandName.equals("touch")){
-            // if (args.length == 1){
-            //     System.out.println("Invalid usage. Usage: touch <file_name>");
-            // } else {
-                touchCommand(parser.getArgs()[0]);
-            // }
-        } else if (commandName.equals("cp")){
-            if (args.length == 2){
-                cpCommand(args[0], args[1]);
-            } else if (args.length == 3 && args[0].equals("-r")){
-                cprCommand(new File(args[1]), new File(args[2]));
-            } else {
-                System.out.println("Invalid usage. Usage: touch <file_name>");
-            }
-        }
+        //String[] args = parser.getArgs();
         
-        else if(commandName.equals("rm")){
-             rmCommand(args);
-        }
 
-        else if(commandName.equals("cat")){
-            catCommand(args);
-        }
+        switch(commandName){
 
-        else if(commandName.equals("wc")){
-            wcCommand(args);
-        }
-        
-        
-        else {
-            System.out.println("Command not found: " + commandName);
+            case "echo"  :
+             if(args.length==1)  return args[0];
+             else  return ("Invalid usage. Usage: echo <text>"); 
+            
+            case "pwd":
+             return(System.getProperty("user.dir"));
+            
+
+            case "cd":
+             return cdCommand(args);
+            
+            
+            case "ls":
+              lsCommand(args);
+              
+            
+            case "touch":
+             touchCommand(parser.getArgs()[0]);
+            
+
+            case "cp":
+
+              if (args.length == 2){
+               cpCommand(args[0], args[1]);} 
+
+              else if (args.length == 3 && args[0].equals("-r")){
+                cprCommand(new File(args[1]), new File(args[2]));}
+                
+              else {
+                System.out.println("Invalid usage. Usage: touch <file_name>");}
+
+            case "rm":
+             return rmCommand(args);
+            
+
+            case "cat":
+             return catCommand(args);
+             
+
+            case "wc":
+             return wcCommand(args);
+            
+
+            default :
+             return ("Command Not Found !"+commandName);
+            
         }
     }
 }

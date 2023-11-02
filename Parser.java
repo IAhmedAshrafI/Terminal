@@ -9,6 +9,7 @@ class Parser {
         if (parts.length == 0) {
             return false;
         }
+        
 
         commandName = parts[0];
         args = Arrays.copyOfRange(parts, 1, parts.length);
