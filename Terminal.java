@@ -108,11 +108,11 @@ public class Terminal extends Commands {
             
             
             case "ls":
-              lsCommand(args);
+              return lsCommand(args);
               
             
             case "touch":
-             touchCommand(parser.getArgs()[0]);
+             return touchCommand(parser.getArgs()[0]);
             
 
             case "cp":
