@@ -15,7 +15,9 @@ public abstract class Commands {
     public String cdCommand(String[] args) {
         if (args.length == 0) {
             // Case 1: 'cd' with no arguments - change to the home directory.
-            return (System.getProperty("user.dir"));
+            String userHome = System.getProperty("user.home");
+            System.setProperty("user.dir", userHome);
+            return userHome;
         } else if (args.length == 1 || args.length == 2 || args.length == 3) {
             if (args[0].equals("..")) {
                 // Case 2: 'cd ..' - change to the previous directory.
