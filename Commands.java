@@ -108,7 +108,19 @@ public abstract class Commands {
     }
 
     public String cpCommand(String source, String destination) {
+        // if the destination file doesn't exists, create a new one, but if soucre doesn't exists, return void
+        File start = new File(source), end = new File(destination);
         Path src = Paths.get(source), des = Paths.get(destination);
+        if (!start.exists()){
+            return "The Source File doesn't exists.";
+        } else if (!end.exists()) {
+            try {
+                end.createNewFile();
+            } catch (IOException e) {
+                e.printStackTrace();
+                return "Error creating the destination file: " + e.getMessage();
+            }
+        }
         try {
             Files.copy(src, des, StandardCopyOption.REPLACE_EXISTING);
             return "Created Successfully";
@@ -119,6 +131,7 @@ public abstract class Commands {
     }
 
     public String cprCommand(File source, File destination) {
+        // if the destination file doesn't exists, create a new one, but if soucre doesn't exists, return void
         try {
             if (source.isDirectory()) {
                 if (!destination.exists()) {
