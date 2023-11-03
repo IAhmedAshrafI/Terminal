@@ -15,7 +15,7 @@ public abstract class Commands {
     public String cdCommand(String[] args) {
         if (args.length == 0) {
             // Case 1: 'cd' with no arguments - change to the home directory.
-            return(System.getProperty("user.dir"));
+            return (System.getProperty("user.dir"));
         } else if (args.length == 1 || args.length == 2 || args.length == 3) {
             if (args[0].equals("..")) {
                 // Case 2: 'cd ..' - change to the previous directory.
@@ -25,7 +25,7 @@ public abstract class Commands {
                 if (parentDir != null) {
                     System.setProperty("user.dir", parentDir);
                     return (parentDir);
-                    
+
                 } else {
                     return ("Already at the root directory.");
                 }
@@ -44,46 +44,45 @@ public abstract class Commands {
                     File targetDir = new File(currentDir, args[0]);
                     if (targetDir.isDirectory()) {
                         System.setProperty("user.dir", targetDir.getAbsolutePath());
-                        return(targetDir.toString());
+                        return (targetDir.toString());
                     } else {
-                        return("Directory not found: " + args[0]);
+                        return ("Directory not found: " + args[0]);
                     }
                 }
             }
         } else {
-            return("Invalid usage. Usage: cd [<path>|..]");
+            return ("Invalid usage. Usage: cd [<path>|..]");
         }
     }
 
     public String lsCommand(String[] args) {
         File currentDir = new File(System.getProperty("user.dir"));
         File[] files = currentDir.listFiles();
-        String ans="";
+        String ans = "";
 
         if (args.length == 0) {
             // Case 1: 'ls' - list contents of the current directory alphabetically.
             if (files != null) {
                 Arrays.sort(files);
                 for (File file : files) {
-                    //System.out.println(file.getName());
-                    ans+=(file.getName()+" \n");
+                    // System.out.println(file.getName());
+                    ans += (file.getName() + " \n");
                 }
             }
-            
+
         } else if (args.length == 1 && args[0].equals("-r")) {
             // Case 2: 'ls -r' - list contents of the current directory in reverse order.
             if (files != null) {
                 Arrays.sort(files, (f1, f2) -> f2.getName().compareTo(f1.getName()));
                 for (File file : files) {
-                    //System.out.println(file.getName());
-                    ans+=(file.getName()+" \n");
+                    // System.out.println(file.getName());
+                    ans += (file.getName() + " \n");
                 }
 
-               
             }
         } else {
-            //System.out.println("Invalid usage. Usage: ls [-r]");
-            ans="Invalid usage. Usage: ls [-r]";
+            // System.out.println("Invalid usage. Usage: ls [-r]");
+            ans = "Invalid usage. Usage: ls [-r]";
         }
 
         return ans;
@@ -95,12 +94,12 @@ public abstract class Commands {
             if (!currentDir.exists()) {
                 boolean fileCreated = currentDir.createNewFile();
                 if (fileCreated) {
-                    return("Creating file: " + fileName);
+                    return ("Creating file: " + fileName);
                 } else {
-                    return("The file is not created.");
+                    return ("The file is not created.");
                 }
             } else {
-             return("The file is already created.");
+                return ("The file is already created.");
             }
         } catch (IOException e) {
             e.printStackTrace();
@@ -149,25 +148,23 @@ public abstract class Commands {
             case 1:
                 File file = new File(args[0]);
 
-                if(file.exists()){
-                   if (file.delete()) {
-                    return("File Deleted .");
+                if (file.exists()) {
+                    if (file.delete()) {
+                        return ("File Deleted .");
+                    }
+
+                    else {
+                        return ("Failed to Delete !");
+                    }
                 }
 
                 else {
-                    return("Failed to Delete !");
+                    return ("No Such File Exists !");
                 }
-                }
-
-                else{
-                    return("No Such File Exists !");
-                }
-
-                
 
             default:
-                return("Invalid Usage ! Usage : rm <filename>");
-                
+                return ("Invalid Usage ! Usage : rm <filename>");
+
         }
 
     }
@@ -181,20 +178,21 @@ public abstract class Commands {
 
                 File file = new File(args[0]);
 
-                    try {
-                        List<String> ans = Files.readAllLines(Paths.get(args[0]));
+                try {
+                    List<String> ans = Files.readAllLines(Paths.get(args[0]));
 
-                        for (String line : ans)
-                            ansStr+=(line);
-                        return ansStr;
-                    }
+                    for (String line : ans)
+                        ansStr += (line);
+                    return ansStr;
+                }
 
-                    catch (IOException e) {
-                        
-                        if(e instanceof NoSuchFileException) ansStr=("No Such File exists !");
+                catch (IOException e) {
 
-                        return ansStr;
-                    }
+                    if (e instanceof NoSuchFileException)
+                        ansStr = ("No Such File exists !");
+
+                    return ansStr;
+                }
 
             case 2:
 
@@ -208,19 +206,19 @@ public abstract class Commands {
                     }
 
                     for (String line : ans)
-                     ansStr+=(line);
+                        ansStr += (line);
 
                     return ansStr;
                 }
 
                 catch (IOException e) {
-                 
-                       if(e instanceof NoSuchFileException) ansStr=("No Such Files Exist !");
-                    
-                       return ansStr;
-                    
+
+                    if (e instanceof NoSuchFileException)
+                        ansStr = ("No Such Files Exist !");
+
+                    return ansStr;
+
                 }
-                
 
             default:
 
@@ -240,38 +238,75 @@ public abstract class Commands {
 
                 File file = new File(args[0]);
 
-                    int lineCount = 0, wordCount = 0, characterCount = 0;
+                int lineCount = 0, wordCount = 0, characterCount = 0;
 
-                    try {
-                        List<String> ans = Files.readAllLines(Paths.get(args[0]));
-                        lineCount = ans.size();
+                try {
+                    List<String> ans = Files.readAllLines(Paths.get(args[0]));
+                    lineCount = ans.size();
 
-                        for (String line : ans) {
-                            String[] words = line.trim().split(" ");
-                            wordCount += words.length;
-                            for (String word : words)
-                                characterCount += word.length();
-                        }
-
-                        ansStr=(lineCount + " " + wordCount + " " + characterCount + " " + args[0]);
-
-                        return ansStr;
-
+                    for (String line : ans) {
+                        String[] words = line.trim().split(" ");
+                        wordCount += words.length;
+                        for (String word : words)
+                            characterCount += word.length();
                     }
 
-                    catch (IOException e) {
-                        e.printStackTrace();
-                        if (e instanceof NoSuchFileException) ansStr="File Not Found !";
-                        return ansStr;
-                    }
+                    ansStr = (lineCount + " " + wordCount + " " + characterCount + " " + args[0]);
 
+                    return ansStr;
+
+                }
+
+                catch (IOException e) {
+                    e.printStackTrace();
+                    if (e instanceof NoSuchFileException)
+                        ansStr = "File Not Found !";
+                    return ansStr;
+                }
 
             default:
-                return("Invalid Usage ! Usage : wc <filename>");
+                return ("Invalid Usage ! Usage : wc <filename>");
 
         }
     }
 
-    
+    public String mkdir(String[] newDirs) {
+        String targetPath = newDirs[newDirs.length - 1]; // Get the last element as the target path
+        File targetDir = new File(targetPath);
+        String result = "";
+
+        // full path not given
+        if (!targetDir.exists()) {
+            String currentDir = System.getProperty("user.dir");
+
+            for (String dir : newDirs) {
+                result += createDirectory(currentDir + File.separator + dir);
+            }
+        } else { // if full path is given
+            for (int i = 0; i < newDirs.length - 1; i++) {
+                result += createDirectory(targetPath + File.separator + newDirs[i]);
+            }
+        }
+
+        return result;
+    }
+
+    private String createDirectory(String directoryPath) {
+        File directory = new File(directoryPath);
+        String message = "";
+
+        if (directory.exists()) {
+            message = "Directory already exists: " + directory.getAbsolutePath() + "\n";
+        } else {
+            boolean created = directory.mkdir();
+            if (created) {
+                message = "";
+            } else {
+                message = "Failed to create directory: " + directory.getAbsolutePath() + "\n";
+            }
+        }
+
+        return message;
+    }
 
 }
