@@ -116,6 +116,7 @@ public class Terminal extends Commands {
 
       case "touch":
         commandList.add(input);
+        if (args.length == 0){return("Invalid usage. Usage: touch <file_name>");}
         return touchCommand(parser.getArgs()[0]);
 
       case "cp":
@@ -131,7 +132,7 @@ public class Terminal extends Commands {
         }
 
         else {
-          System.out.println("Invalid usage. Usage: touch <file_name>");
+          System.out.println("Invalid usage. Usage: cp <file_name> <file_name> || cp -r <folder_name> <folder_name>");
         }
 
       case "rm":
